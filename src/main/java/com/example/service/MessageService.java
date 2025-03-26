@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +51,47 @@ public class MessageService {
 
         // Add the Message to the database.
         return messageRepository.save(message);
+    }
+
+    /**
+     * Returns an Iterable containing every Message in the database.
+     * 
+     * @return an Iterable containing every Message in the database
+     */
+    public Iterable<Message> getAllMessages() {
+        return messageRepository.findAll();
+    }
+
+    /**
+     * Returns the Message in the database with the given numerical ID, or {@literal null} if 
+     * there is no such Message.
+     * 
+     * @param id a numerical ID to search for
+     * @return the Message in the database with the given ID, or {@literal null} if there is no such Message
+     */
+    public Message getMessageById(int id) {
+        return messageRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Deletes the Message in the database with the given numerical ID, if such a Message exists. 
+     * This method returns the Message that was deleted, or {@literal null} if there is no such 
+     * Message.
+     * 
+     * @param id a numerical ID to search for
+     * @return the Message with the given ID that was in the database, or {@literal null} if no message with that ID was in the database.
+     */
+    public Message deleteMessageById(int id) {
+        // Get the message (or lack thereof) by ID
+        Optional<Message> deletedMessage = messageRepository.findById(id);
+        
+        // If there is such a message, delete it and return it.
+        if (deletedMessage.isPresent()) {
+            messageRepository.deleteById(id);
+            return deletedMessage.get();
+        }
+
+        // Otherwise, return null.
+        return null;
     }
 }
