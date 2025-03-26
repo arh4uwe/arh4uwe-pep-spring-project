@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.entity.Account;
 import com.example.exception.DuplicateUsernameException;
 import com.example.exception.IllegalCredentialsException;
+import com.example.exception.ResourceNotFoundException;
 import com.example.repository.AccountRepository;
 
 @Service
@@ -53,5 +54,19 @@ public class AccountService {
 
         // Add the account to the database.
         return accountRepository.save(account);
+    }
+
+    /**
+     * Returns the Account in the database with the given username and password.
+     * 
+     * @param username a username to search for
+     * @param password a password to search for
+     * @return the Account in the database with the given username and password
+     * @throws ResourceNotFoundException if no Account exists with the given username and password
+     */
+    public Account login(String username, String password) throws ResourceNotFoundException {
+        return accountRepository.findByUsernameAndPassword(username, password).orElseThrow(() -> {
+            return new ResourceNotFoundException("No account found with the given credentials.");
+        });
     }
 }
