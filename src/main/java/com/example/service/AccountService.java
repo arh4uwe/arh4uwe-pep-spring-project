@@ -69,4 +69,14 @@ public class AccountService {
             return new ResourceNotFoundException("No account found with the given credentials.");
         });
     }
+
+    /**
+     * Returns whether there exists an account in the database with the given numerical ID.
+     * 
+     * @param accountId a numerical ID for an account
+     * @return {@literal true} if an account with the given ID exists in the database, {@literal false} otherwise.
+     */
+    public boolean existsAccountWithId(Integer accountId) {
+        return accountRepository.existsById(accountId);
+    }
 }
