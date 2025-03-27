@@ -76,24 +76,20 @@ public class MessageService {
 
     /**
      * Deletes the Message in the database with the given numerical ID, if such a Message exists. 
-     * This method returns the Message that was deleted, or {@literal null} if there is no such 
-     * Message.
+     * This method returns the number of messages that were deleted.
      * 
      * @param id a numerical ID to search for
-     * @return the Message with the given ID that was in the database, or {@literal null} if no message with that ID was in the database.
+     * @return the number of messages in the database that were deleted. Should be 1 if there was a message with the given ID, 0 otherwise.
      */
-    public Message deleteMessageById(int id) {
-        // Get the message (or lack thereof) by ID
-        Optional<Message> deletedMessage = messageRepository.findById(id);
-        
-        // If there is such a message, delete it and return it.
-        if (deletedMessage.isPresent()) {
+    public int deleteMessageById(int id) {
+        // If there is a message with the given ID, delete it and return 1.
+        if (messageRepository.findById(id).isPresent()) {
             messageRepository.deleteById(id);
-            return deletedMessage.get();
+            return 1;
         }
 
-        // Otherwise, return null.
-        return null;
+        // Otherwise, return 0.
+        return 0;
     }
 
     /**
