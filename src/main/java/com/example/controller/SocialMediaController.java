@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.entity.Account;
 import com.example.exception.DuplicateUsernameException;
 import com.example.exception.IllegalCredentialsException;
+import com.example.exception.UnauthorizedCredentialsException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
@@ -35,15 +36,19 @@ public class SocialMediaController {
     }
 
     @ExceptionHandler(DuplicateUsernameException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public String handleDuplicateUsername(DuplicateUsernameException ex) {
         return ex.getMessage();
     }
 
-    
+    @ExceptionHandler(UnauthorizedCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleUnauthorizedCredentials(UnauthorizedCredentialsException ex) {
+        return ex.getMessage();
+    }
 
     @ExceptionHandler(IllegalCredentialsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleIllegalCredentials(IllegalCredentialsException ex) {
         return ex.getMessage();
     }
