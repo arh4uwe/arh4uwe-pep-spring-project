@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.entity.Message;
 import com.example.exception.IllegalMessageException;
+import com.example.exception.ResourceNotFoundException;
 import com.example.repository.MessageRepository;
 
 @Service
@@ -93,5 +94,59 @@ public class MessageService {
 
         // Otherwise, return null.
         return null;
+    }
+
+    /**
+     * Updates the message with the given numerical ID by replacing its message text with the 
+     * given text. The update of a message will be successful if and only if the message ID 
+     * already exists and the new message_text is not null or blank and is not over 255 characters.
+     * 
+     * @param id a numerical ID to search for
+     * @param newMessageText updated message text for the message with the given ID
+     * @return the number of messages in the database that were updated. Should always be 1, assuming the method doesn't throw anything.
+     * @throws IllegalMessageException if the message text is null, blank, or more than 254 characters
+     * @throws ResourceNotFoundException if there is no message in the database with the given ID
+     */
+    public int updateMessageById(int id, String newMessageText)
+            throws IllegalMessageException, ResourceNotFoundException {
+        /*
+         * If the new message text is null, blank, or more than 254 characters, 
+         * throw an Exception.
+         */
+        if (newMessageText == null) {
+            throw new IllegalMessageException("Message text cannot be null.");
+        } else if (newMessageText.equals("")) {
+            throw new IllegalMessageException("Message text cannot be empty.");
+        } else if (newMessageText.length() > MAX_MESSAGE_LENGTH) {
+            throw new IllegalMessageException(
+                "Message text cannot be more than " + MAX_MESSAGE_LENGTH + " characters long."
+            );
+        }
+
+        /*
+         * Get the message in the database with the given ID, 
+         * or throw an Exception if there is no such message.
+         */
+        Message message = messageRepository.findById(id).orElseThrow(() -> {
+            return new ResourceNotFoundException("No message found with ID " + id + ".");
+        });
+
+        // Update the message text and resubmit the message into the database.
+        message.setMessageText(newMessageText);
+        messageRepository.save(message);
+
+        // Return the number of rows updated. At this point, this value should always be 1.
+        return 1;
+    }
+
+    /**
+     * Returns an Iterable containing every Message in the database posted by the Account with the 
+     * given ID, or an empty Iterable if no such Account exists.
+     * 
+     * @param accountId a numerical ID that may or may not be associated with an Account in the database
+     * @return an Iterable containing every Message posted by the Account with the given ID
+     */
+    public Iterable<Message> getAllMessagesByAccountId(int accountId) {
+        return messageRepository.findByPostedBy(accountId);
     }
 }
