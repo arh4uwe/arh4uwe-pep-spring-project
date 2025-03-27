@@ -3,7 +3,7 @@ package com.example.exception;
 /**
  * An exception to be thrown if the user submits an invalid username or password during registration.
  */
-public class IllegalCredentialsException extends Exception {
+public class IllegalCredentialsException extends RuntimeException {
     /**
      * Creates a new IllegalCredentialsException with the given message.
      * 

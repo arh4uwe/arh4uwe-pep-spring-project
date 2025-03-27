@@ -7,6 +7,7 @@ import com.example.entity.Account;
 import com.example.exception.DuplicateUsernameException;
 import com.example.exception.IllegalCredentialsException;
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.UnauthorizedCredentialsException;
 import com.example.repository.AccountRepository;
 
 @Service
@@ -62,11 +63,11 @@ public class AccountService {
      * @param username a username to search for
      * @param password a password to search for
      * @return the Account in the database with the given username and password
-     * @throws ResourceNotFoundException if no Account exists with the given username and password
+     * @throws UnauthorizedCredentialsException if no Account exists with the given username and password
      */
-    public Account login(String username, String password) throws ResourceNotFoundException {
+    public Account login(String username, String password) throws UnauthorizedCredentialsException {
         return accountRepository.findByUsernameAndPassword(username, password).orElseThrow(() -> {
-            return new ResourceNotFoundException("No account found with the given credentials.");
+            return new UnauthorizedCredentialsException("No account found with the given credentials.");
         });
     }
 
