@@ -58,15 +58,18 @@ public class AccountService {
     }
 
     /**
-     * Returns the Account in the database with the given username and password.
+     * Returns the Account in the database with the username and password of the given Account 
+     * object.
      * 
-     * @param username a username to search for
-     * @param password a password to search for
+     * @param account an Account object containing the username and password to search for
      * @return the Account in the database with the given username and password
      * @throws UnauthorizedCredentialsException if no Account exists with the given username and password
      */
-    public Account login(String username, String password) throws UnauthorizedCredentialsException {
-        return accountRepository.findByUsernameAndPassword(username, password).orElseThrow(() -> {
+    public Account login(Account account) throws UnauthorizedCredentialsException {
+        return accountRepository.findByUsernameAndPassword(
+            account.getUsername(),
+            account.getPassword()
+        ).orElseThrow(() -> {
             return new UnauthorizedCredentialsException("No account found with the given credentials.");
         });
     }
